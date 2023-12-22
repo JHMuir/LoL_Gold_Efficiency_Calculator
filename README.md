@@ -1,9 +1,5 @@
 # LoL_Gold_Efficiency_Calculator
-<<<<<<< Updated upstream
-A short python script to find how gold efficient an item is in League of Legends.
-=======
-A short script to find how gold efficient an item is League of Legends.
->>>>>>> Stashed changes
+A short script to find how gold efficient an item is in League of Legends.
 
 It's probably slow and user-unfriendly but it's just something quick I whipped up in a morning :). 
 
