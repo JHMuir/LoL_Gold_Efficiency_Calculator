@@ -8,29 +8,34 @@ def read_input():
     rtype:
     full_cost_item: int
     item_name: str
-    stats_item: list[(int, str)]
+    item_stats: list[(int, str)]
     """
-    stats_item = []  
+    item_stats = []  
     with open('input.txt', 'r') as input:
         for i in input.readlines():
             tmp = i.split(',')
-            #We check if the line starts with a symbol. The way it is saved is determined by that symbol. 
-            if tmp[0].startswith("#"):
+            #We check if the line starts with a symbol. The way it is saved is determined by that symbol.
+            try: 
+                if tmp[0].startswith("#"):
                     tmp[0] = tmp[0].replace("#","")
                     full_cost_item = int(tmp[0])
+                    print("HERE!")
                     continue
-            if tmp[0].startswith("$"):
+                if tmp[0].startswith("$"):
                     tmp[0] = tmp[0].replace("$","")
                     item_name = str(tmp[0])
+
                     continue
-            for j in tmp:
+                for j in tmp:
                 #We seperate our stats line into a tuple of int and str
-                match = re.match(r"([0-9]+)([a-z]+)", j, re.I)
-                if match:
-                    stats = match.groups()
-                    #We append that tuple into our stats list
-                    stats_item.append(stats)
-    return full_cost_item, item_name, stats_item
+                    match = re.match(r"([0-9]+)([a-z]+)", j, re.I)
+                    if match:
+                        stats = match.groups()
+                        #We append that tuple into our stats list
+                        item_stats.append(stats)
+            except:
+                print("Please format the input correctly. See the README.md")
+    return full_cost_item, item_name, item_stats
 
 
 def gold_eff_algo(stats_item, full_cost_item, reference_stats):
@@ -48,7 +53,11 @@ def gold_eff_algo(stats_item, full_cost_item, reference_stats):
         #Multiply the item's stats by how each point of that stat is worth, using the reference items.
         sum = sum + (reference_stats[stats_item[i][1]] * int(stats_item[i][0]))
     #We divide that sum bu the full cost of the item, and multiply it by 100 to get our final value.
-    gold_eff = (sum / full_cost_item) * 100
+    try:
+        gold_eff = (sum / full_cost_item) * 100
+    except ZeroDivisionError:
+        print("Error! The total cost must not be equal to or less than zero.")
+        exit()
     return gold_eff
     
 
@@ -63,13 +72,13 @@ def main():
         "MS":12, "MS%":80, #Flat and Percent Movement Speed
         "LS":53.57,"ARP":41.67, #Life Steal and Armor Penetration
         "MRP":31.11,"MRP%":42.79, #Flat and Percent Magic Penetration
-        "OHD":21.67,"AH":26.67, #On-Hit Damage and Ability Haste
+        "OH":21.67,"AH":26.67, #On-Hit Damage and Ability Haste
         "HSP":68.75, "OV":39.67 #Heal and Shield Power and Omnivamp
         
     }
     
-    full_cost_item, item_name, stats_item = read_input()
-    gold_eff = gold_eff_algo(stats_item, full_cost_item, reference_stats)
+    full_cost_item, item_name, item_stats = read_input()
+    gold_eff = gold_eff_algo(item_stats, full_cost_item, reference_stats)
     format_gold_eff = "{:.2f}".format(gold_eff)
     print(f"The gold efficiency of {item_name} is {format_gold_eff}%")
 
